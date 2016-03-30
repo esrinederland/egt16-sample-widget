@@ -1,0 +1,25 @@
+{
+  "name": "CircleBy",
+  "label": "Circle By Widget",
+  "2D": false,
+  "3D": true,
+  "platform": "HTML3D",
+  "version": "0.0.1",
+  "wabVersion": "2.0beta",
+  "author": "Fons Hissin (Esri Nederland)",
+  "description": "Sample widget for the GISTech 2016",
+  "copyright": "",
+  "license": "ISC",
+  "properties": {
+    "inPanel": true,
+    "hasLocale": true,
+    "hasStyle": true,
+    "hasConfig": true,
+    "hasUIFile": true,
+    "hasSettingPage": false,
+    "hasSettingUIFile": false,
+    "hasSettingLocale": false,
+    "hasSettingStyle": false,
+    "IsController": false
+  }
+}

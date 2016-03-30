@@ -1,0 +1,10 @@
+.circle-by-widget h3 {
+  font-size: 1.2em;
+}
+.circle-by-widget h3, p {
+  margin-top: 0;
+}
+
+.circle-by-widget .active {
+  background-color: green;
+}
