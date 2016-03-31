@@ -8,3 +8,7 @@
 .circle-by-widget .active {
   background-color: green;
 }
+
+.circle-by-widget .jimu-btn {
+  margin-top: 20px;
+}
