@@ -11,7 +11,7 @@ define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/
       this.sceneView.map.add(this.graphicsLayer);
     },
     btnCircleByClicked: function btnCircleByClicked() {
-      //clear previous graphics on the map
+      // clear previous graphics on the map
       this.graphicsLayer.clear();
 
       // add active cssclass to button

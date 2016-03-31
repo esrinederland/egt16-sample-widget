@@ -18,7 +18,7 @@ export default declare([BaseWidget], {
   baseClass: 'circle-by-widget',
   graphicsLayer: undefined,
 
-  postCreate() {
+  postCreate () {
     this.inherited(arguments);
 
     // create a new graphicslayer where the created buffercircle can be added to
@@ -26,8 +26,8 @@ export default declare([BaseWidget], {
     this.sceneView.map.add(this.graphicsLayer);
   },
 
-  btnCircleByClicked() {
-    //clear previous graphics on the map
+  btnCircleByClicked () {
+    // clear previous graphics on the map
     this.graphicsLayer.clear();
 
     // add active cssclass to button
@@ -37,7 +37,7 @@ export default declare([BaseWidget], {
     on.once(this.sceneView, 'click', lang.hitch(this, this.mapClicked));
   },
 
-  mapClicked(evt) {
+  mapClicked (evt) {
     var point = evt.mapPoint;
     var bufferDistance = 50;
     var bufferUnits = 'meters';
@@ -48,7 +48,7 @@ export default declare([BaseWidget], {
       .then(lang.hitch(this, this.startCircleBy));
   },
 
-  addRingToMap(response) {
+  addRingToMap (response) {
     // loop through the points of the buffercircle
     array.forEach(response.rings[0], lang.hitch(this, function (ring) {
       // add each point to the graphicslayer
@@ -65,18 +65,18 @@ export default declare([BaseWidget], {
     return response.rings[0];
   },
 
-  startCircleBy(ringPoints) {
+  startCircleBy (ringPoints) {
     var params = {
       index: 0,
       count: ringPoints.length,
       ringPoints: ringPoints
-    }
+    };
 
     // start the animation based on the points in the buffer
     this.loopThrougRingPoints(params);
   },
 
-  loopThrougRingPoints(params) {
+  loopThrougRingPoints (params) {
     // animate to the given point in the buffercircle
     // update the counter and determine if another animation should be executed
     params.index++;
@@ -100,7 +100,7 @@ export default declare([BaseWidget], {
   },
 
   // create a graphic to add to the graphisclayer
-  createPointGraphic(coordinates) {
+  createPointGraphic (coordinates) {
     var point = new Point(coordinates);
 
     var pointGraphic = new Graphic({
@@ -112,7 +112,7 @@ export default declare([BaseWidget], {
   },
 
   // create a symbol that can be used by the graphic
-  createSimpleMarkerSymbol() {
+  createSimpleMarkerSymbol () {
     var markerSymbol = new SimpleMarkerSymbol({
       color: [226, 119, 40],
 
