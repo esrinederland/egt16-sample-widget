@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/on', 'jimu/BaseWidget', 'esri/Graphic', 'esri/geometry/Point', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleLineSymbol', 'esri/symbols/SimpleMarkerSymbol', 'esri/geometry/geometryEngineAsync'], function (declare, domClass, array, lang, on, BaseWidget, Graphic, Point, GraphicsLayer, SimpleLineSymbol, SimpleMarkerSymbol, geometryEngineAsync) {
+define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/on', 'jimu/BaseWidget', 'esri/Camera', 'esri/Graphic', 'esri/geometry/Point', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleLineSymbol', 'esri/symbols/SimpleMarkerSymbol', 'esri/geometry/geometryEngineAsync'], function (declare, domClass, array, lang, on, BaseWidget, Camera, Graphic, Point, GraphicsLayer, SimpleLineSymbol, SimpleMarkerSymbol, geometryEngineAsync) {
   return declare([BaseWidget], {
     baseClass: 'circle-by-widget',
     graphicsLayer: undefined,
@@ -45,36 +45,52 @@ define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/
       return response.rings[0];
     },
     startCircleBy: function startCircleBy(ringPoints) {
-      var params = {
+      var ring = {
         index: 0,
         count: ringPoints.length,
         ringPoints: ringPoints
       };
-
+      //this.graphicsLayer.clear();
       // start the animation based on the points in the buffer
-      this.loopThrougRingPoints(params);
+      this.loopThrougRingPoints(ring);
     },
-    loopThrougRingPoints: function loopThrougRingPoints(params) {
+    loopThrougRingPoints: function loopThrougRingPoints(ring) {
       // animate to the given point in the buffercircle
       // update the counter and determine if another animation should be executed
-      params.index++;
-      if (params.index < params.count) {
-        var deferred = this.sceneView.animateTo({
-          target: new Point({
-            x: params.ringPoints[params.index][0],
-            y: params.ringPoints[params.index][1],
-            z: 40,
-            spatialReference: 102100
-          }),
-          heading: 360 / params.count * params.index,
-          tilt: 70,
-          zoom: 19
+      ring.index++;
+      if (ring.index < ring.count) {
+        // create a point on which the view will be centered
+        var point = new Point({
+          x: ring.ringPoints[ring.index][0],
+          y: ring.ringPoints[ring.index][1],
+          z: 40,
+          spatialReference: {
+            wkid: 102100
+          }
         });
 
-        deferred.then(lang.hitch(this, this.loopThrougRingPoints, params));
+        // create viewpoint info that can be used by the SceneView
+        var viewPointInfo = {
+          heading: 360 / ring.count * ring.index,
+          tilt: 70,
+          scale: 1250,
+          target: point
+        };
+
+        this.navigateToViewPoint(viewPointInfo);
+
+        // wait a short time before going to the next point
+        setTimeout(lang.hitch(this, this.loopThrougRingPoints, ring), 30);
       } else {
         domClass.remove(this.btnCircleBy, 'active');
       }
+    },
+    navigateToViewPoint: function navigateToViewPoint(viewPointInfo) {
+      //create a new viewpoint based on the viewpoint info
+      var viewPoint = this.sceneView.createViewpoint(viewPointInfo);
+
+      //set the new viewpoint
+      this.sceneView.viewpoint = viewPoint;
     },
     createPointGraphic: function createPointGraphic(coordinates) {
       var point = new Point(coordinates);

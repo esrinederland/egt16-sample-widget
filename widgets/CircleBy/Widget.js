@@ -6,6 +6,7 @@ import on from 'dojo/on';
 
 import BaseWidget from 'jimu/BaseWidget';
 
+import Camera from 'esri/Camera';
 import Graphic from 'esri/Graphic';
 import Point from 'esri/geometry/Point';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
@@ -18,7 +19,7 @@ export default declare([BaseWidget], {
   baseClass: 'circle-by-widget',
   graphicsLayer: undefined,
 
-  postCreate () {
+  postCreate() {
     this.inherited(arguments);
 
     // create a new graphicslayer where the created buffercircle can be added to
@@ -26,7 +27,7 @@ export default declare([BaseWidget], {
     this.sceneView.map.add(this.graphicsLayer);
   },
 
-  btnCircleByClicked () {
+  btnCircleByClicked() {
     // clear previous graphics on the map
     this.graphicsLayer.clear();
 
@@ -37,7 +38,7 @@ export default declare([BaseWidget], {
     on.once(this.sceneView, 'click', lang.hitch(this, this.mapClicked));
   },
 
-  mapClicked (evt) {
+  mapClicked(evt) {
     var point = evt.mapPoint;
     var bufferDistance = 50;
     var bufferUnits = 'meters';
@@ -48,7 +49,7 @@ export default declare([BaseWidget], {
       .then(lang.hitch(this, this.startCircleBy));
   },
 
-  addRingToMap (response) {
+  addRingToMap(response) {
     // loop through the points of the buffercircle
     array.forEach(response.rings[0], lang.hitch(this, function (ring) {
       // add each point to the graphicslayer
@@ -65,42 +66,59 @@ export default declare([BaseWidget], {
     return response.rings[0];
   },
 
-  startCircleBy (ringPoints) {
-    var params = {
+  startCircleBy(ringPoints) {
+    var ring = {
       index: 0,
       count: ringPoints.length,
       ringPoints: ringPoints
     };
-
+    //this.graphicsLayer.clear();
     // start the animation based on the points in the buffer
-    this.loopThrougRingPoints(params);
+    this.loopThrougRingPoints(ring);
   },
 
-  loopThrougRingPoints (params) {
+  loopThrougRingPoints(ring) {
     // animate to the given point in the buffercircle
     // update the counter and determine if another animation should be executed
-    params.index++;
-    if (params.index < params.count) {
-      var deferred = this.sceneView.animateTo({
-        target: new Point({
-          x: params.ringPoints[params.index][0],
-          y: params.ringPoints[params.index][1],
-          z: 40,
-          spatialReference: 102100
-        }),
-        heading: ((360 / params.count) * params.index),
-        tilt: 70,
-        zoom: 19
+    ring.index++;
+    if (ring.index < ring.count) {
+      // create a point on which the view will be centered
+      var point = new Point({
+        x: ring.ringPoints[ring.index][0],
+        y: ring.ringPoints[ring.index][1],
+        z: 40,
+        spatialReference: {
+          wkid: 102100
+        }
       });
 
-      deferred.then(lang.hitch(this, this.loopThrougRingPoints, params));
+      // create viewpoint info that can be used by the SceneView
+      var viewPointInfo = {
+        heading: ((360 / ring.count) * ring.index),
+        tilt: 70,
+        scale: 1250,
+        target: point,
+      }
+
+      this.navigateToViewPoint(viewPointInfo);
+
+      // wait a short time before going to the next point
+      setTimeout(lang.hitch(this, this.loopThrougRingPoints, ring), 30);
     } else {
       domClass.remove(this.btnCircleBy, 'active');
     }
   },
 
+  navigateToViewPoint(viewPointInfo) {
+    //create a new viewpoint based on the viewpoint info
+    var viewPoint = this.sceneView.createViewpoint(viewPointInfo);
+
+    //set the new viewpoint
+    this.sceneView.viewpoint = viewPoint;
+  },
+
   // create a graphic to add to the graphisclayer
-  createPointGraphic (coordinates) {
+  createPointGraphic(coordinates) {
     var point = new Point(coordinates);
 
     var pointGraphic = new Graphic({
@@ -112,7 +130,7 @@ export default declare([BaseWidget], {
   },
 
   // create a symbol that can be used by the graphic
-  createSimpleMarkerSymbol () {
+  createSimpleMarkerSymbol() {
     var markerSymbol = new SimpleMarkerSymbol({
       color: [226, 119, 40],
 
