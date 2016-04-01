@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/on', 'jimu/BaseWidget', 'esri/Camera', 'esri/Graphic', 'esri/geometry/Point', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleLineSymbol', 'esri/symbols/SimpleMarkerSymbol', 'esri/geometry/geometryEngineAsync'], function (declare, domClass, array, lang, on, BaseWidget, Camera, Graphic, Point, GraphicsLayer, SimpleLineSymbol, SimpleMarkerSymbol, geometryEngineAsync) {
+define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/on', 'jimu/BaseWidget', 'esri/Graphic', 'esri/geometry/Point', 'esri/layers/GraphicsLayer', 'esri/symbols/SimpleLineSymbol', 'esri/symbols/SimpleMarkerSymbol', 'esri/geometry/geometryEngineAsync'], function (declare, domClass, array, lang, on, BaseWidget, Graphic, Point, GraphicsLayer, SimpleLineSymbol, SimpleMarkerSymbol, geometryEngineAsync) {
   return declare([BaseWidget], {
     baseClass: 'circle-by-widget',
     graphicsLayer: undefined,
@@ -50,7 +50,7 @@ define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/
         count: ringPoints.length,
         ringPoints: ringPoints
       };
-      //this.graphicsLayer.clear();
+      // this.graphicsLayer.clear();
       // start the animation based on the points in the buffer
       this.loopThrougRingPoints(ring);
     },
@@ -86,10 +86,10 @@ define(['dojo/_base/declare', 'dojo/dom-class', 'dojo/_base/array', 'dojo/_base/
       }
     },
     navigateToViewPoint: function navigateToViewPoint(viewPointInfo) {
-      //create a new viewpoint based on the viewpoint info
+      // create a new viewpoint based on the viewpoint info
       var viewPoint = this.sceneView.createViewpoint(viewPointInfo);
 
-      //set the new viewpoint
+      // set the new viewpoint
       this.sceneView.viewpoint = viewPoint;
     },
     createPointGraphic: function createPointGraphic(coordinates) {
